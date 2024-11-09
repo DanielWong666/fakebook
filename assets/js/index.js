@@ -63,9 +63,20 @@ class Subscriber extends User {
     }
 
     getInfo() {
-        return `Subscriber: \n${super.getInfo()}\nPages: ${this.#pages.join(", ")}\nGroups: ${this.#groups.join(", ")}\nCan Monetize: ${this.#canMonetize}`;
+        return `${super.getInfo()}\nPages: ${this.#pages.join(", ")}\nGroups: ${this.#groups.join(", ")}\nCan Monetize: ${this.#canMonetize}`;
     }
 }
+
+/*--------------------------------------------*/
+/*Modal                                       */
+/*--------------------------------------------*/
+
+const duan = new User(
+    111111,
+    "Duan Wang",
+    "DuanWang666",
+    "duan@example.com",
+);
 
 const subscriber = new Subscriber(
     222222,
@@ -77,17 +88,15 @@ const subscriber = new Subscriber(
     true
 );
 
-/*--------------------------------------------*/
-/*Modal                                       */
-/*--------------------------------------------*/
-
 const profileImage = document.querySelector('.profile-image');
-const modal = document.querySelector('.infoModal');
-const modalContent = document.querySelector('.modalContent');
+const modal = document.querySelector('.info-modal');
+const userContent = document.querySelector('.user-content');
+const subscriberContent = document.querySelector('.subscriber-content');
 
 profileImage.addEventListener('click', () => {
-    modalContent.textContent = subscriber.getInfo();
-    modal.style.display = 'flex'; // Display modal
+    userContent.innerText = duan.getInfo();
+    subscriberContent.innerText = subscriber.getInfo();
+    modal.style.display = 'flex'; 
 });
 
 modal.addEventListener('click', (event) => {
@@ -99,6 +108,7 @@ modal.addEventListener('click', (event) => {
 /*--------------------------------------------*/
 /* File name display                          */
 /*--------------------------------------------*/
+
 const imageUpload = document.querySelector('.image-upload');
 const fileName = document.querySelector('.file-name');
 
@@ -124,7 +134,6 @@ const postBtn = document.querySelector('.post-button');
 const postsSection = document.querySelector('.posts-section');
 const errorMessage = document.querySelector('.error-message');
 const textInput = document.querySelector('.message');
-
 const user = {
     profilePic: 'assets/img/profile image.png', 
     fullName: 'Duan Wang'
