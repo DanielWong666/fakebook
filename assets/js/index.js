@@ -34,7 +34,7 @@ class User {
     }
 
     getInfo() {
-        return `ID: ${this.#id}\nName: ${this.#name}\nUsername: ${this.#userName}\nEmail: ${this.#email}`;
+        return `Name: ${this.#name}\nUsername: ${this.#userName}\nEmail: ${this.#email}`;
     }
 }
 
@@ -63,7 +63,7 @@ class Subscriber extends User {
     }
 
     getInfo() {
-        return `${super.getInfo()}\nPages: ${this.#pages.join(", ")}\nGroups: ${this.#groups.join(", ")}\nCan Monetize: ${this.#canMonetize}`;
+        return `${super.getInfo()}\nGroups: ${this.#groups.join(", ")}`;
     }
 }
 
@@ -71,30 +71,22 @@ class Subscriber extends User {
 /*Modal                                       */
 /*--------------------------------------------*/
 
-const duan = new User(
+const profileImage = document.querySelector('.profile-image');
+const modal = document.querySelector('.info-modal');
+const subscriberContent = document.querySelector('.subscriber-content');
+const subscriberName = document.querySelector('.subscriber-name');
+const subscriber = new Subscriber(
     111111,
     "Duan Wang",
     "DuanWang666",
     "duan@example.com",
-);
-
-const subscriber = new Subscriber(
-    222222,
-    "John Smith",
-    "JohnSmith888",
-    "John@example.com",
     ["Page1", "Page2"],
-    ["Group1", "Group2"],
+    ["MITT", "Developer"],
     true
 );
 
-const profileImage = document.querySelector('.profile-image');
-const modal = document.querySelector('.info-modal');
-const userContent = document.querySelector('.user-content');
-const subscriberContent = document.querySelector('.subscriber-content');
-
 profileImage.addEventListener('click', () => {
-    userContent.innerText = duan.getInfo();
+    subscriberName.innerText = subscriber.getName();
     subscriberContent.innerText = subscriber.getInfo();
     modal.style.display = 'flex'; 
 });
@@ -112,13 +104,13 @@ modal.addEventListener('click', (event) => {
 const imageUpload = document.querySelector('.image-upload');
 const fileName = document.querySelector('.file-name');
 
-function fileNameDisplay(imageUpload) {
+function fileNameDisplay() {
     const file = imageUpload.files[0];
 
     if (file) {
         fileName.innerText = file.name; 
     } else {
-        fileName.innerText = 'No file chosen'; 
+        fileName.innerText = ''; 
     }
 }
 
@@ -132,12 +124,22 @@ imageUpload.addEventListener('change', function() {
 
 const postBtn = document.querySelector('.post-button');
 const postsSection = document.querySelector('.posts-section');
-const errorMessage = document.querySelector('.error-message');
 const textInput = document.querySelector('.message');
-const user = {
-    profilePic: 'assets/img/profile image.png', 
-    fullName: 'Duan Wang'
-};
+
+function togglePostBtn() {
+    if (textInput.value.trim() !== '' || imageUpload.files.length > 0) {
+        postBtn.disabled = false;
+        postBtn.style.backgroundColor = '#2994ff';
+        postBtn.style.cursor = 'pointer';
+    } else {
+        postBtn.disabled = true;
+        postBtn.style.backgroundColor = '#82b7eb';
+        postBtn.style.cursor = 'not-allowed';
+    }
+}
+
+textInput.addEventListener ('input', togglePostBtn);
+imageUpload.addEventListener ('change', togglePostBtn);
 
 function formatDate(date) {
     const options = { 
@@ -151,13 +153,6 @@ function formatDate(date) {
 function createPost(textInput, imageUpload) {
     const postText = textInput.value;
     const imageFile = imageUpload.files[0];
-    
-    if (!postText && !imageFile) {
-        errorMessage.innerText = 'Please write something or upload an image!';
-        return;
-    } else {
-        errorMessage.innerText = '';
-    }
 
     const post = document.createElement('div');
     post.classList.add('post-display');
@@ -166,14 +161,21 @@ function createPost(textInput, imageUpload) {
     postHeader.classList.add('post-header');
     postHeader.innerHTML = `
         <div class="image-div">
-        <img class="profile-image" src="${user.profilePic}" alt="Profile Pic">
-        <p class="name">${user.fullName}</p>
+          <img class="profile-image" src="assets/img/profile image.png" alt="Profile Pic">
+          <p class="name">${subscriber.getName()}</p>
         </div>
         <div class="date-box">
-        <p class="date">${formatDate(new Date())}</p>
+          <p class="date">${formatDate(new Date())}</p>
         </div>
     `;
     post.appendChild(postHeader);
+
+    const newProfileImage = postHeader.querySelector('.profile-image');
+    newProfileImage.addEventListener('click', () => {
+        subscriberName.innerText = subscriber.getName();
+        subscriberContent.innerText = subscriber.getInfo();
+        modal.style.display = 'flex'; 
+    });
 
     const postContent = document.createElement('div');
     postContent.classList.add('post-content');
@@ -196,4 +198,6 @@ postBtn.addEventListener('click', function() {
     textInput.value = '';
     imageUpload.value = '';
     fileNameDisplay(imageUpload);
+    
+    togglePostBtn();
 });
